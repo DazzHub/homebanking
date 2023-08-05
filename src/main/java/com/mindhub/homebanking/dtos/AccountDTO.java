@@ -1,16 +1,14 @@
 package com.mindhub.homebanking.dtos;
 
 import com.mindhub.homebanking.models.Account;
-import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.models.Transaction;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 public class AccountDTO {
 
-    private long id;
+    private final long id;
     private String number;
     private LocalDateTime date;
     private double balance;

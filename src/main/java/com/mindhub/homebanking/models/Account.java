@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,7 +26,7 @@ public class Account {
 
 
     @OneToMany(mappedBy="account", fetch=FetchType.EAGER)
-    private Set<Transaction> transactions = new HashSet<>();
+    private final Set<Transaction> transactions = new HashSet<>();
 
     public Account() {
     }

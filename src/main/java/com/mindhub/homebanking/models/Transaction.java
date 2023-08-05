@@ -37,7 +37,6 @@ public class Transaction {
         this.amount = amount;
     }
 
-
     public long getId() {
         return id;
     }
