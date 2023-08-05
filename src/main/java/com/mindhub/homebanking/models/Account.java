@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,12 +18,12 @@ public class Account {
     private LocalDateTime date;
     private double balance;
 
-    public Account() {
-    }
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id")
     private Client client;
+
+    public Account() {
+    }
 
     public Account(LocalDateTime date, double balance) {
         this.date = date;
@@ -57,4 +56,5 @@ public class Account {
     public void setClient(Client client) {
         this.client = client;
     }
+
 }
