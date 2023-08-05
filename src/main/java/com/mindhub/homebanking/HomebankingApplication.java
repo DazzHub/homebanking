@@ -1,11 +1,19 @@
 package com.mindhub.homebanking;
 
+import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
+import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
+import java.util.Arrays;
+import java.util.Date;
 
 @SpringBootApplication
 public class HomebankingApplication {
@@ -15,9 +23,45 @@ public class HomebankingApplication {
 	}
 
 	@Bean
-	public CommandLineRunner initData(ClientRepository clientRepository) {
+	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository) {
 		return (args) -> {
-			clientRepository.save(new Client("Melba", "Morel", "melba@mindhub.com"));
+			createClientMelba(clientRepository, accountRepository);
+			createClientYo(clientRepository, accountRepository);
 		};
 	}
+
+	private void createClientMelba(ClientRepository clientRepository, AccountRepository accountRepository) {
+		LocalDateTime now =  LocalDateTime.now();
+		LocalDateTime sameDayNextDay = now.plusDays(1);
+
+		Client client = new Client("Melba", "Morel", "melba@mindhub.com");
+		clientRepository.save(client);
+
+		Account account = new Account(now, 5000);
+		Account account2 = new Account(sameDayNextDay,7500);
+
+		client.addAccount(account);
+		client.addAccount(account2);
+
+		accountRepository.save(account);
+		accountRepository.save(account2);
+	}
+
+	private void createClientYo(ClientRepository clientRepository, AccountRepository accountRepository) {
+		LocalDateTime now =  LocalDateTime.now();
+		LocalDateTime sameDayNextDay = now.plusDays(1);
+
+		Client client = new Client("Gabriel", "Oubiña", "ak.gabrii@mindhub.com");
+		clientRepository.save(client);
+
+		Account account = new Account(now, 5000);
+		Account account2 = new Account(sameDayNextDay,7500);
+
+		client.addAccount(account);
+		client.addAccount(account2);
+
+		accountRepository.save(account);
+		accountRepository.save(account2);
+	}
+
 }
