@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ClientDTO {
 
@@ -16,8 +17,8 @@ public class ClientDTO {
     private final String firstName;
     private final String lastName;
     private final String email;
-    private final Set<Account> accounts;
-    private final Set<ClientLoan> loans;
+    private final Set<AccountDTO> accounts;
+    private final Set<ClientLoanDTO> loans;
 
     public ClientDTO(Client client) {
 
@@ -29,9 +30,9 @@ public class ClientDTO {
 
         this.email = client.getEmail();
 
-        this.accounts = client.getAccounts();
+        this.accounts = client.getAccounts().stream().map(AccountDTO::new).collect(Collectors.toSet());
 
-        this.loans = client.getLoans();
+        this.loans = client.getLoans().stream().map(ClientLoanDTO::new).collect(Collectors.toSet());
     }
 
     public long getId() {
@@ -50,14 +51,11 @@ public class ClientDTO {
         return email;
     }
 
-    public Set<Account> getAccounts() {
+    public Set<AccountDTO> getAccounts() {
         return accounts;
     }
 
-    public Set<ClientLoan> getLoans() {
-
-        System.out.println("-> " + this.loans.size());
-
-        return this.loans;
+    public Set<ClientLoanDTO> getLoans() {
+        return loans;
     }
 }
