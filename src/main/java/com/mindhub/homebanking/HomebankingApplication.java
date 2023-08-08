@@ -38,7 +38,9 @@ public class HomebankingApplication {
 		clientRepository.save(client);
 
 		Account account = new Account(now, 5000);
+		account.setNumber("VIN"+1);
 		Account account2 = new Account(sameDayNextDay,7500);
+		account2.setNumber("VIN"+2);
 
 		Transaction transaction = new Transaction(TransactionType.DEBIT, "Zapatillas", now, 2000);
 		Transaction transaction2 = new Transaction(TransactionType.CREDIT, "Joyas", sameDayNextDay, 3000);
@@ -73,7 +75,9 @@ public class HomebankingApplication {
 		clientRepository.save(client);
 
 		Account account = new Account(now, 5000);
+		account.setNumber("VIN"+3);
 		Account account2 = new Account(sameDayNextDay,7500);
+		account2.setNumber("VIN"+4);
 
 		Transaction transaction = new Transaction(TransactionType.DEBIT, "PC", now, 2000);
 		Transaction transaction2 = new Transaction(TransactionType.CREDIT, "Monitor", sameDayNextDay, 3000);

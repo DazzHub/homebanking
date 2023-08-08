@@ -67,6 +67,10 @@ public class Account {
         return transactions;
     }
 
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
     public void addTransaction(Transaction transaction){
         transaction.setAccount(this);
         this.transactions.add(transaction);
