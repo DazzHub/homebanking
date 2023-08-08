@@ -32,8 +32,7 @@ public class Account {
     }
 
     public String getNumber() {
-        String formattedNumber = String.format("%03d", this.id);
-        return this.number + formattedNumber;
+        return number;
     }
 
     public long getId() {
@@ -57,4 +56,7 @@ public class Account {
         this.client = client;
     }
 
+    public void setNumber(String number) {
+        this.number = number;
+    }
 }

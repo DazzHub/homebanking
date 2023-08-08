@@ -34,7 +34,9 @@ public class HomebankingApplication {
 		clientRepository.save(client);
 
 		Account account = new Account(now, 5000);
+		account.setNumber("VIN001");
 		Account account2 = new Account(sameDayNextDay, 7500);
+		account2.setNumber("VIN002");
 
 		client.addAccount(account);
 		client.addAccount(account2);
@@ -51,8 +53,9 @@ public class HomebankingApplication {
 		clientRepository.save(client);
 
 		Account account = new Account(now, 5000);
+		account.setNumber("VIN003");
 		Account account2 = new Account(sameDayNextDay,7500);
-
+		account2.setNumber("VIN004");
 
 		client.addAccount(account);
 		client.addAccount(account2);
