@@ -38,8 +38,7 @@ public class Account {
     }
 
     public String getNumber() {
-        String formattedNumber = String.format("%03d", this.id);
-        return this.number + formattedNumber;
+        return number;
     }
 
     public long getId() {

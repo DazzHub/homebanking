@@ -18,7 +18,6 @@ public class Transaction {
     private TransactionType type;
     private String description;
     private LocalDateTime date;
-
     private double amount;
 
     @ManyToOne(fetch = FetchType.EAGER)
