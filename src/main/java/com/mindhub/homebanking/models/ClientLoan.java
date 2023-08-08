@@ -19,17 +19,18 @@ public class ClientLoan {
     private double amount;
     private int payments;
     @ManyToMany(fetch = FetchType.EAGER)
-    private final Set<Client> clients = new HashSet<>();
+
+    private final Set<Client> clientsss = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
+
     private final Set<Loan> loans = new HashSet<>();
 
     public ClientLoan(){}
 
-    public ClientLoan(double amount, int payments, Loan loan) {
+    public ClientLoan(double amount, int payments) {
         this.amount = amount;
         this.payments = payments;
-        this.loans.add(loan);
     }
 
     public long getId() {
@@ -54,7 +55,7 @@ public class ClientLoan {
 
     @JsonIgnore
     public Set<Client> getClients() {
-        return clients;
+        return clientsss;
     }
 
     public Set<Loan> getLoans() {
@@ -62,6 +63,12 @@ public class ClientLoan {
     }
 
     public void addClient(Client client) {
-        this.clients.add(client);
+
+        this.clientsss.add(client);
+    }
+
+    public void addLoan(Loan loan) {
+        System.out.println("Se agrega " + loan.getName());
+        this.loans.add(loan);
     }
 }
