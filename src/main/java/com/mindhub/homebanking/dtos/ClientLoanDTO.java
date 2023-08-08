@@ -1,35 +1,34 @@
 package com.mindhub.homebanking.dtos;
 
-import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.models.ClientLoan;
-import com.mindhub.homebanking.models.Loan;
-
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ClientLoanDTO {
 
     private final long id;
     private final double amount;
     private final int payments;
+    private final String name;
 
-    private final Set<ClientDTO> clients;
-
-    private final Set<LoanDTO> loans;
+    private final long loanId;
 
     public ClientLoanDTO(ClientLoan clientLoan){
         this.id = clientLoan.getId();
+        this.loanId = clientLoan.getId();
+        this.name = clientLoan.getLoan().getName();
         this.amount = clientLoan.getAmount();
         this.payments = clientLoan.getPayments();
-        this.clients = clientLoan.getClients().stream().map(ClientDTO::new).collect(Collectors.toSet());
-        this.loans = clientLoan.getLoans().stream().map(LoanDTO::new).collect(Collectors.toSet());
     }
 
     public long getId() {
         return id;
+    }
+
+    public long getLoanId() {
+        return loanId;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public double getAmount() {
@@ -40,11 +39,4 @@ public class ClientLoanDTO {
         return payments;
     }
 
-    public Set<ClientDTO> getClients() {
-        return clients;
-    }
-
-    public Set<LoanDTO> getLoans() {
-        return loans;
-    }
 }

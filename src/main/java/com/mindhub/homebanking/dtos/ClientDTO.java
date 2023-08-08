@@ -32,7 +32,7 @@ public class ClientDTO {
 
         this.accounts = client.getAccounts().stream().map(AccountDTO::new).collect(Collectors.toSet());
 
-        this.loans = client.getLoans().stream().map(ClientLoanDTO::new).collect(Collectors.toSet());
+        this.loans = client.getClientLoans().stream().map(ClientLoanDTO::new).collect(Collectors.toSet());
     }
 
     public long getId() {

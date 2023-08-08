@@ -4,7 +4,9 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Loan {
@@ -53,4 +55,5 @@ public class Loan {
     public void setPayments(List<Integer> payments) {
         this.payments = payments;
     }
+
 }
