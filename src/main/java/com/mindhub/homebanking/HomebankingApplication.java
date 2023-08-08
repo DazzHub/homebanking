@@ -1,18 +1,16 @@
 package com.mindhub.homebanking;
 
 import com.mindhub.homebanking.enums.TransactionType;
-import com.mindhub.homebanking.models.Account;
-import com.mindhub.homebanking.models.Client;
-import com.mindhub.homebanking.models.Transaction;
-import com.mindhub.homebanking.repositories.AccountRepository;
-import com.mindhub.homebanking.repositories.ClientRepository;
-import com.mindhub.homebanking.repositories.TransactionRepository;
+import com.mindhub.homebanking.models.*;
+import com.mindhub.homebanking.repositories.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 @SpringBootApplication
 public class HomebankingApplication {
@@ -22,14 +20,22 @@ public class HomebankingApplication {
 	}
 
 	@Bean
-	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository) {
+	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository) {
 		return (args) -> {
-			createClientMelba(clientRepository, accountRepository, transactionRepository);
-			createClientYo(clientRepository, accountRepository, transactionRepository);
+			Loan prestamo1 = new Loan("Préstamo Hipotecario", 500000, List.of(12,24,36,48,60));
+			Loan prestamo2 = new Loan("Préstamo Personal", 50000, List.of(6,12,24));
+			Loan prestamo3 = new Loan("Préstamo Automotriz", 50000, List.of(6,12,24,36));
+
+			loanRepository.save(prestamo1);
+			loanRepository.save(prestamo2);
+			loanRepository.save(prestamo3);
+
+			createClientMelba(clientRepository, accountRepository, transactionRepository, clientLoanRepository, prestamo1, prestamo2, prestamo3);
+			createClientYo(clientRepository, accountRepository, transactionRepository, clientLoanRepository, prestamo1, prestamo2, prestamo3);
 		};
 	}
 
-	private void createClientMelba(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository) {
+	private void createClientMelba(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, ClientLoanRepository clientLoanRepository, Loan prestamo1, Loan prestamo2, Loan prestamo3) {
 		LocalDateTime now =  LocalDateTime.now();
 		LocalDateTime sameDayNextDay = now.plusDays(1);
 		LocalDateTime sameDayBackDay = now.plusDays(-1);
@@ -46,12 +52,24 @@ public class HomebankingApplication {
 		Transaction transaction3 = new Transaction(TransactionType.CREDIT, "Combustible", sameDayBackDay, 4000);
 		Transaction transaction4 = new Transaction(TransactionType.DEBIT, "GAS", sameDayBackDay, 15000);
 
+		ClientLoan clientLoan1 = new ClientLoan(400000, 60, prestamo1);
+		ClientLoan clientLoan2 = new ClientLoan(50000, 12, prestamo2);
+
+		/* accounts */
 		client.addAccount(account);
 		client.addAccount(account2);
 
 		accountRepository.save(account);
 		accountRepository.save(account2);
 
+		/* loans */
+		client.addLoan(clientLoan1);
+		client.addLoan(clientLoan2);
+
+		clientLoanRepository.save(clientLoan1);
+		clientLoanRepository.save(clientLoan2);
+
+		/* Transactions */
 		account.addTransaction(transaction);
 		account.addTransaction(transaction2);
 
@@ -64,7 +82,7 @@ public class HomebankingApplication {
 		transactionRepository.save(transaction4);
 	}
 
-	private void createClientYo(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository) {
+	private void createClientYo(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, ClientLoanRepository clientLoanRepository, Loan prestamo1, Loan prestamo2, Loan prestamo3) {
 		LocalDateTime now =  LocalDateTime.now();
 		LocalDateTime sameDayNextDay = now.plusDays(1);
 		LocalDateTime sameDayBackDay = now.plusDays(-1);
@@ -81,12 +99,24 @@ public class HomebankingApplication {
 		Transaction transaction3 = new Transaction(TransactionType.CREDIT, "Combustible", sameDayBackDay, 4000);
 		Transaction transaction4 = new Transaction(TransactionType.DEBIT, "Obra social", sameDayBackDay, 15000);
 
+		ClientLoan clientLoan1 = new ClientLoan(100000, 24, prestamo2);
+		ClientLoan clientLoan2 = new ClientLoan(200000, 36, prestamo3);
+
+		/* accounts */
 		client.addAccount(account);
 		client.addAccount(account2);
 
 		accountRepository.save(account);
 		accountRepository.save(account2);
 
+		/* Loans */
+		client.addLoan(clientLoan1);
+		client.addLoan(clientLoan2);
+
+		clientLoanRepository.save(clientLoan1);
+		clientLoanRepository.save(clientLoan2);
+
+		/* Transactions */
 		account.addTransaction(transaction);
 		account.addTransaction(transaction2);
 
