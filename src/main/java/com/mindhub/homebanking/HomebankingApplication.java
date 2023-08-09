@@ -1,5 +1,6 @@
 package com.mindhub.homebanking;
 
+import com.mindhub.homebanking.enums.CardColor;
 import com.mindhub.homebanking.enums.TransactionType;
 import com.mindhub.homebanking.models.*;
 import com.mindhub.homebanking.repositories.*;
@@ -20,7 +21,7 @@ public class HomebankingApplication {
 	}
 
 	@Bean
-	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository) {
+	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository, CardRepository cardRepository) {
 		return (args) -> {
 			Loan hipotecario = new Loan("Préstamo Hipotecario", 500000, List.of(12,24,36,48,60));
 			Loan personal = new Loan("Préstamo Personal", 100000, List.of(6,12,24));
@@ -30,13 +31,13 @@ public class HomebankingApplication {
 			loanRepository.save(hipotecario);
 			loanRepository.save(automotriz);
 
-			createClientMelba(clientRepository, accountRepository, transactionRepository, clientLoanRepository, personal, hipotecario, automotriz);
-			createClientYo(clientRepository, accountRepository, transactionRepository, clientLoanRepository, personal, hipotecario, automotriz);
+			createClientMelba(clientRepository, accountRepository, transactionRepository, clientLoanRepository, cardRepository, personal, hipotecario, automotriz);
+			createClientYo(clientRepository, accountRepository, transactionRepository, clientLoanRepository, cardRepository, personal, hipotecario, automotriz);
 		};
 	}
 
 
-	private void createClientMelba(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, ClientLoanRepository clientLoanRepository, Loan personal, Loan hipotecario, Loan automotriz) {
+	private void createClientMelba(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, ClientLoanRepository clientLoanRepository, CardRepository cardRepository, Loan personal, Loan hipotecario, Loan automotriz) {
 		LocalDateTime now =  LocalDateTime.now();
 		LocalDateTime sameDayNextDay = now.plusDays(1);
 		LocalDateTime sameDayBackDay = now.plusDays(-1);
@@ -85,9 +86,18 @@ public class HomebankingApplication {
 
 		clientLoanRepository.save(clientLoan);
 		clientLoanRepository.save(clientLoan2);
+
+		Card card1 = new Card(client.getFirstName(), client.getLastName(), TransactionType.DEBIT, CardColor.GOLD, LocalDateTime.now(), true, true);
+		client.addCard(card1);
+
+		cardRepository.save(card1);
+
+		Card card2 = new Card(client.getFirstName(), client.getLastName(), TransactionType.CREDIT, CardColor.TITANIUM, LocalDateTime.now(), true, true);
+		client.addCard(card2);
+		cardRepository.save(card2);
 	}
 
-	private void createClientYo(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, ClientLoanRepository clientLoanRepository, Loan personal, Loan hipotecario, Loan automotriz) {
+	private void createClientYo(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, ClientLoanRepository clientLoanRepository, CardRepository cardRepository, Loan personal, Loan hipotecario, Loan automotriz) {
 		LocalDateTime now =  LocalDateTime.now();
 		LocalDateTime sameDayNextDay = now.plusDays(1);
 		LocalDateTime sameDayBackDay = now.plusDays(-1);
@@ -136,6 +146,11 @@ public class HomebankingApplication {
 
 		clientLoanRepository.save(clientLoan);
 		clientLoanRepository.save(clientLoan2);
+
+		Card card1 = new Card(client.getFirstName(), client.getLastName(), TransactionType.CREDIT, CardColor.GOLD, LocalDateTime.now(), true, true);
+		client.addCard(card1);
+
+		cardRepository.save(card1);
 	}
 
 }
