@@ -4,12 +4,11 @@ import com.mindhub.homebanking.dtos.ClientDTO;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +22,13 @@ public class ClientController {
 
     @Autowired
     private ClientRepository clientRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
 
     @RequestMapping("/clients")
     public List<ClientDTO> getClients(){
@@ -49,7 +55,7 @@ public class ClientController {
             return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
         }
 
-        clientRepo.save(new Client(firstName, lastName, email, passwordEncoder().encode(password)));
+        clientRepo.save(new Client(firstName, lastName, email, passwordEncoder.encode(password)));
 
         return new ResponseEntity<>(HttpStatus.CREATED);
 
@@ -62,23 +68,20 @@ public class ClientController {
             return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
         }
 
-
         Client client = clientRepo.findByEmail(email);
 
-        if(client == null){
-            return new ResponseEntity<>("Userdate error", HttpStatus.FORBIDDEN);
+        if (client != null) {
+            return new ResponseEntity<>(userDetailsService.loadUserByUsername(email), HttpStatus.ACCEPTED);
         }
 
-        if (!passwordEncoder().matches(password, client.getPassword())) {
-            return new ResponseEntity<>("Userdate error", HttpStatus.FORBIDDEN);
-        }
+        return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
+    }
+
+
+    @RequestMapping(path = "/logout", method = RequestMethod.POST)
+    public ResponseEntity<Object> logout() {
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
-
     }
 
-    @Bean
-    private PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
 }
