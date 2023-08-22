@@ -23,18 +23,18 @@ public class WebAuthorization {
 
 
         http.authorizeRequests()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/web/accounts.html").hasRole("USER")
                 .antMatchers("/auth/**", "/auth/css/**", "/auth/img/**", "/auth/js/**", "/api/clients", "/api/login").permitAll()
+                .antMatchers("/admin/**").hasAuthority("ADMIN")
+                .antMatchers("/web/**").hasAuthority("CLIENT")
         ;
 
         http.formLogin()
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .loginPage("/auth/index.html")
+                .loginPage("/auth/login")
                 .successForwardUrl("/web/accounts.html");
 
-        http.logout().logoutUrl("/web/accounts.html");
+        http.logout().logoutUrl("/auth/logout");
 
         http.csrf().disable();
         http.headers().frameOptions().disable();

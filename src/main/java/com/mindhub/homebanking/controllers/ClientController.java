@@ -6,6 +6,7 @@ import com.mindhub.homebanking.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -61,27 +62,20 @@ public class ClientController {
 
     }
 
-    @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public ResponseEntity<Object> login(@RequestParam String email, @RequestParam String password) {
+    @RequestMapping("/clients/current")
+    public ResponseEntity<Object> clientCurrent(Authentication authentication) {
 
-        if (email.isEmpty() || password.isEmpty()) {
-            return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
+        if (authentication.getName() == null){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        Client client = clientRepo.findByEmail(email);
+        Client client = clientRepo.findByEmail(authentication.getName());
 
-        if (client != null) {
-            return new ResponseEntity<>(userDetailsService.loadUserByUsername(email), HttpStatus.ACCEPTED);
+        if (client == null){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
-    }
-
-
-    @RequestMapping(path = "/logout", method = RequestMethod.POST)
-    public ResponseEntity<Object> logout() {
-
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(new ClientDTO(client), HttpStatus.ACCEPTED);
     }
 
 }

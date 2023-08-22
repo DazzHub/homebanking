@@ -41,7 +41,7 @@ public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdap
 
                 return User.withUsername(client.getEmail())
                         .password(client.getPassword())
-                        .roles("USER")
+                        .authorities("CLIENT")
                         .build();
 
             } else {

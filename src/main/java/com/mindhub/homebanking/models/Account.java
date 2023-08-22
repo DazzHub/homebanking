@@ -34,7 +34,6 @@ public class Account {
     public Account(LocalDateTime date, double balance) {
         this.date = date;
         this.balance = balance;
-        this.number = "VIN";
     }
 
     public String getNumber() {
