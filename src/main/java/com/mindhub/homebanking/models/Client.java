@@ -40,6 +40,20 @@ public class Client {
         this.password = password;
     }
 
+    public void addAccount(Account account){
+        account.setClient(this);
+        this.accounts.add(account);
+    }
+
+    public void addClientLoan(ClientLoan clientLoan) {
+        clientLoans.add(clientLoan);
+    }
+
+    public void addCard(Card card){
+        card.setClient(this);
+        this.cards.add(card);
+    }
+
     public long getId() {
         return id;
     }
@@ -66,20 +80,6 @@ public class Client {
 
     public Set<Card> getCards() {
         return cards;
-    }
-
-    public void addAccount(Account account){
-        account.setClient(this);
-        this.accounts.add(account);
-    }
-
-    public void addClientLoan(ClientLoan clientLoan) {
-        clientLoans.add(clientLoan);
-    }
-
-    public void addCard(Card card){
-        card.setClient(this);
-        this.cards.add(card);
     }
 
     public void setPassword(String password) {

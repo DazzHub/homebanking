@@ -2,6 +2,7 @@ package com.mindhub.homebanking.models;
 
 import com.mindhub.homebanking.enums.CardColor;
 import com.mindhub.homebanking.enums.TransactionType;
+import com.mindhub.homebanking.utils.Utils;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -52,13 +53,7 @@ public class Card {
     }
 
     public void randomCVV(){
-        StringBuilder fakeCardNumberBuilder = new StringBuilder();
-        Random random = new Random();
-        for (int i = 0; i < 3; i++) {
-            fakeCardNumberBuilder.append(random.nextInt(10));
-        }
-
-        this.cvv = Integer.parseInt(fakeCardNumberBuilder.toString());
+        this.cvv = Integer.parseInt(Utils.random3());
     }
 
     public Client getClient() {

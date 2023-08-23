@@ -1,4 +1,5 @@
 Vue.createApp({
+
     data() {
         return {
             accountInfo: {},
@@ -26,8 +27,8 @@ Vue.createApp({
             return new Date(date).toLocaleDateString('en-gb');
         },
         signOut: function () {
-            axios.post('/api/logout')
-                .then(response => window.location.href = "/web/index.html")
+            axios.post('/auth/logout')
+                .then(response => window.location.href = "/auth/index.html")
                 .catch(() => {
                     this.errorMsg = "Sign out failed"
                     this.errorToats.show();
