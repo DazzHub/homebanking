@@ -91,12 +91,16 @@ public class HomebankingApplication {
 		clientLoanRepository.save(clientLoan);
 		clientLoanRepository.save(clientLoan2);
 
-		Card card1 = new Card(client.getFirstName(), client.getLastName(), TransactionType.DEBIT, CardColor.GOLD, LocalDateTime.now(), true, true);
+		Card card1 = new Card(client.getFirstName(), client.getLastName(), TransactionType.DEBIT, CardColor.GOLD, LocalDateTime.now());
+		card1.randomCVV();
+		card1.randomCard();
 		client.addCard(card1);
 
 		cardRepository.save(card1);
 
-		Card card2 = new Card(client.getFirstName(), client.getLastName(), TransactionType.CREDIT, CardColor.TITANIUM, LocalDateTime.now(), true, true);
+		Card card2 = new Card(client.getFirstName(), client.getLastName(), TransactionType.CREDIT, CardColor.TITANIUM, LocalDateTime.now());
+		card2.randomCVV();
+		card2.randomCard();
 		client.addCard(card2);
 		cardRepository.save(card2);
 	}
@@ -151,7 +155,9 @@ public class HomebankingApplication {
 		clientLoanRepository.save(clientLoan);
 		clientLoanRepository.save(clientLoan2);
 
-		Card card1 = new Card(client.getFirstName(), client.getLastName(), TransactionType.CREDIT, CardColor.GOLD, LocalDateTime.now(), true, true);
+		Card card1 = new Card(client.getFirstName(), client.getLastName(), TransactionType.CREDIT, CardColor.GOLD, LocalDateTime.now());
+		card1.randomCVV();
+		card1.randomCard();
 		client.addCard(card1);
 
 		cardRepository.save(card1);

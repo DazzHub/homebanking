@@ -28,7 +28,7 @@ public class Card {
 
     public Card(){}
 
-    public Card(String firstName, String lastName, TransactionType cardType, CardColor cardColor, LocalDateTime fromDate, boolean number, boolean cvv) {
+    public Card(String firstName, String lastName, TransactionType cardType, CardColor cardColor, LocalDateTime fromDate) {
         this.fromDate = fromDate;
         this.thruDate = fromDate.plusYears(5);
 
@@ -36,29 +36,29 @@ public class Card {
         this.color = cardColor;
 
         this.cardHolder = firstName + " " + lastName;
+    }
 
-        if(number){
-            StringBuilder fakeCardNumberBuilder = new StringBuilder();
-            Random random = new Random();
-            for (int i = 0; i < 16; i++) {
-                if (i > 0 && i % 4 == 0) {
-                    fakeCardNumberBuilder.append("-");
-                }
-                fakeCardNumberBuilder.append(random.nextInt(10));
+    public void randomCard(){
+        StringBuilder fakeCardNumberBuilder = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 16; i++) {
+            if (i > 0 && i % 4 == 0) {
+                fakeCardNumberBuilder.append("-");
             }
-
-            this.number = fakeCardNumberBuilder.toString();
+            fakeCardNumberBuilder.append(random.nextInt(10));
         }
 
-        if (cvv){
-            StringBuilder fakeCardNumberBuilder = new StringBuilder();
-            Random random = new Random();
-            for (int i = 0; i < 3; i++) {
-                fakeCardNumberBuilder.append(random.nextInt(10));
-            }
+        this.number = fakeCardNumberBuilder.toString();
+    }
 
-            this.cvv = Integer.parseInt(fakeCardNumberBuilder.toString());
+    public void randomCVV(){
+        StringBuilder fakeCardNumberBuilder = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 3; i++) {
+            fakeCardNumberBuilder.append(random.nextInt(10));
         }
+
+        this.cvv = Integer.parseInt(fakeCardNumberBuilder.toString());
     }
 
     public Client getClient() {
