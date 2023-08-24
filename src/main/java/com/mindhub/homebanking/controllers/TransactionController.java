@@ -53,8 +53,8 @@ public class TransactionController {
         }
 
         //buscar cuenta por number
-        Account accountClient = client.getAccounts().stream().filter(account -> account.getNumber().equalsIgnoreCase(fromAccountNumber)).findFirst().orElse(null);
-        Account accountOtherClient = otherClient.getAccounts().stream().filter(account -> account.getNumber().equalsIgnoreCase(toAccountNumber)).findFirst().orElse(null);
+        Account accountClient = getAccountByNumber(client, fromAccountNumber);
+        Account accountOtherClient = getAccountByNumber(otherClient, toAccountNumber);
 
         if (accountClient == null || accountOtherClient == null){
             return new ResponseEntity<>("No tenes esa cuenta :V", HttpStatus.FORBIDDEN);
@@ -87,7 +87,7 @@ public class TransactionController {
     }
 
     private void processTransaction(Account account, TransactionType type, String description, LocalDateTime timestamp, double amount) {
-        Transaction transaction = new Transaction(type, description, timestamp, amount, account);
+        Transaction transaction = new Transaction(type, description, timestamp, amount);
         transactionRepo.save(transaction);
 
         if (type == TransactionType.DEBIT) {
@@ -97,7 +97,8 @@ public class TransactionController {
         }
 
         account.addTransaction(transaction);
-        clientRepo.save(account.getClient());
+
+        transaction.setAccount(account);
     }
 
 }
