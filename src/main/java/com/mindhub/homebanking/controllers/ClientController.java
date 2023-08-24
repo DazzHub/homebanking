@@ -21,6 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -94,7 +96,7 @@ public class ClientController {
 
     @RequestMapping(path = "/clients/current/accounts", method = RequestMethod.POST)
     public ResponseEntity<Object> addAccountClient(Authentication authentication) {
-        if (authentication.getName() == null){
+        if (authentication == null){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -121,7 +123,8 @@ public class ClientController {
 
     @RequestMapping(path = "/clients/current/accounts", method = RequestMethod.GET)
     public ResponseEntity<Object> getAccountsClient(Authentication authentication) {
-        if (authentication.getName() == null){
+
+        if (authentication == null){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -131,7 +134,7 @@ public class ClientController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        return new ResponseEntity<>(client.getAccounts(), HttpStatus.OK);
+        return new ResponseEntity<>(new ClientDTO(client).getAccounts(), HttpStatus.OK);
     }
 
     @RequestMapping(path = "/clients/current/cards", method = RequestMethod.POST)
@@ -166,7 +169,7 @@ public class ClientController {
     @RequestMapping(path = "/clients/current/cards", method = RequestMethod.GET)
     public ResponseEntity<Object> getCardsClient(Authentication authentication) {
 
-        if (authentication.getName() == null) {
+        if (authentication == null) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -175,6 +178,7 @@ public class ClientController {
         if (client == null) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
+
 
         return new ResponseEntity<>(client.getCards(), HttpStatus.OK);
     }

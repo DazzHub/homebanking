@@ -41,6 +41,14 @@ public class Account {
         this.transactions.add(transaction);
     }
 
+    public void removeBalance(double amount){
+        this.balance = Math.max(balance - amount, 0);
+    }
+
+    public void addBalance(double amount){
+        this.balance += amount;
+    }
+
     public String getNumber() {
         return number;
     }
