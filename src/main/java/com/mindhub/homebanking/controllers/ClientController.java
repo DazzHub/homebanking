@@ -24,6 +24,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -152,6 +154,21 @@ public class ClientController {
 
         if (client.getCards().size() >= 3){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        TransactionType type = TransactionType.valueOf(cardType.toUpperCase());
+        CardColor color = CardColor.valueOf(cardColor.toUpperCase());
+
+        Set<Card> cardsOfType = client.getCards().stream().filter(card -> card.getType().equals(type)).collect(Collectors.toSet());
+
+        if (cardsOfType.stream().anyMatch(card -> card.getColor().equals(color))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("NO puedes tener 2 tarjetas de tipo " + color.name());
+        }
+
+        if (cardsOfType.size() >= 3) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Superaste el máximo de tarjetas de tipo " + type.name());
         }
 
         Card newCard = new Card(client.getFirstName(), client.getLastName(), TransactionType.valueOf(cardType.toUpperCase()), CardColor.valueOf(cardColor.toUpperCase()), LocalDateTime.now());
