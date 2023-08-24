@@ -6,6 +6,7 @@ import com.mindhub.homebanking.enums.TransactionType;
 import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Card;
 import com.mindhub.homebanking.models.Client;
+import com.mindhub.homebanking.models.Transaction;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.CardRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -147,18 +150,29 @@ public class ClientController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        if (client.getCards().size() >= 3){
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        TransactionType type = TransactionType.valueOf(cardType.toUpperCase());
+        CardColor color = CardColor.valueOf(cardColor.toUpperCase());
+
+        Set<Card> cardsOfType = client.getCards().stream().filter(card -> card.getType().equals(type)).collect(Collectors.toSet());
+
+        if (cardsOfType.stream().anyMatch(card -> card.getColor().equals(color))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("NO puedes tener 2 tarjetas de tipo " + color.name());
         }
 
-        Card newCard = new Card(client.getFirstName(), client.getLastName(), TransactionType.valueOf(cardType.toUpperCase()), CardColor.valueOf(cardColor.toUpperCase()), LocalDateTime.now());
+        if (cardsOfType.size() >= 3) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Superaste el máximo de tarjetas de tipo " + type.name());
+        }
+
+        Card newCard = new Card(client.getFirstName(), client.getLastName(), type, color, LocalDateTime.now());
         newCard.randomCVV();
         newCard.randomCard();
+
+        client.getCards().add(newCard);
         newCard.setClient(client);
 
         cardRepository.save(newCard);
-
-        client.getCards().add(newCard);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
