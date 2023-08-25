@@ -142,7 +142,7 @@ public class ClientController {
     @RequestMapping(path = "/clients/current/cards", method = RequestMethod.POST)
     public ResponseEntity<Object> addCardClient(Authentication authentication, @RequestParam String cardType, @RequestParam String cardColor) {
 
-        if (authentication.getName() == null){
+        if (authentication == null){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 

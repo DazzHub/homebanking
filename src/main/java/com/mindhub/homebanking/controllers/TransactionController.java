@@ -7,6 +7,7 @@ import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.models.Transaction;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import com.mindhub.homebanking.repositories.TransactionRepository;
+import com.mindhub.homebanking.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class TransactionController {
             return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
         }
 
-        if (authentication.getName() == null){
+        if (authentication == null){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -66,8 +67,8 @@ public class TransactionController {
 
         LocalDateTime now =  LocalDateTime.now();
 
-        processTransaction(accountClient, TransactionType.DEBIT, description, now, Double.parseDouble(amount));
-        processTransaction(accountOtherClient, TransactionType.CREDIT, description, now, Double.parseDouble(amount));
+        Utils.processTransaction(accountClient, TransactionType.DEBIT, description, now, Double.parseDouble(amount), transactionRepo);
+        Utils.processTransaction(accountOtherClient, TransactionType.CREDIT, description, now, Double.parseDouble(amount), transactionRepo);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -84,21 +85,6 @@ public class TransactionController {
         return client.getAccounts().stream()
                 .filter(account -> account.getNumber().equalsIgnoreCase(accountNumber))
                 .findFirst().orElse(null);
-    }
-
-    private void processTransaction(Account account, TransactionType type, String description, LocalDateTime timestamp, double amount) {
-        Transaction transaction = new Transaction(type, description, timestamp, amount);
-        transactionRepo.save(transaction);
-
-        if (type == TransactionType.DEBIT) {
-            account.removeBalance(amount);
-        } else {
-            account.addBalance(amount);
-        }
-
-        account.addTransaction(transaction);
-
-        transaction.setAccount(account);
     }
 
 }
