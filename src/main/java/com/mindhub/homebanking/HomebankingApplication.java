@@ -27,6 +27,11 @@ public class HomebankingApplication {
 	@Bean
 	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository, CardRepository cardRepository) {
 		return (args) -> {
+			if(clientRepository.findByEmail("melba@mindhub.com") != null){
+				System.out.println("Cuentas de testing funcionando");
+				return;
+			}
+
 			Loan hipotecario = new Loan("Préstamo Hipotecario", 500000, List.of(12,24,36,48,60));
 			Loan personal = new Loan("Préstamo Personal", 100000, List.of(6,12,24));
 			Loan automotriz = new Loan("Préstamo Automotriz", 300000, List.of(6,12,24,36));

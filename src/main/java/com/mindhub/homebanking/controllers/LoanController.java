@@ -35,12 +35,12 @@ public class LoanController {
     @Autowired
     private TransactionRepository transactionRepo;
 
-    @RequestMapping("/loans")
+    @GetMapping("/loans")
     public ResponseEntity<Object> getAllLoans(){
         return new ResponseEntity<>(loanRepo.findAll().stream().map(LoanDTO::new).collect(Collectors.toSet()), HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/loans", method = RequestMethod.POST)
+    @PostMapping("/loans")
     public ResponseEntity<Object> addClientLoans(
             Authentication authentication,
             @RequestBody LoanApplicationDTO loanApplicationDTO

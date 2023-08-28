@@ -49,12 +49,12 @@ public class ClientController {
     private CardRepository cardRepository;
 
 
-    @RequestMapping("/clients")
+    @GetMapping("/clients")
     public List<ClientDTO> getClients(){
         return clientRepo.findAll().stream().map(ClientDTO::new).collect(toList());
     }
 
-    @RequestMapping("/clients/{id}")
+    @GetMapping("/clients/{id}")
     public ClientDTO getClientByID(@PathVariable Long id){
         Client client = clientRepo.findById(id).orElse(null);
         if (client == null) return null;
@@ -62,7 +62,7 @@ public class ClientController {
         return new ClientDTO(client);
     }
 
-    @RequestMapping(path = "/clients", method = RequestMethod.POST)
+    @PostMapping("/clients")
     public ResponseEntity<Object> register(@RequestParam String firstName, @RequestParam String lastName,@RequestParam String email, @RequestParam String password) {
 
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
@@ -80,7 +80,7 @@ public class ClientController {
 
     }
 
-    @RequestMapping("/clients/current")
+    @GetMapping("/clients/current")
     public ResponseEntity<Object> clientCurrent(Authentication authentication) {
 
         if (authentication.getName() == null){
@@ -96,7 +96,7 @@ public class ClientController {
         return new ResponseEntity<>(new ClientDTO(client), HttpStatus.ACCEPTED);
     }
 
-    @RequestMapping(path = "/clients/current/accounts", method = RequestMethod.POST)
+    @PostMapping("/clients/current/accounts")
     public ResponseEntity<Object> addAccountClient(Authentication authentication) {
         if (authentication == null){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -123,7 +123,7 @@ public class ClientController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @RequestMapping(path = "/clients/current/accounts", method = RequestMethod.GET)
+    @GetMapping("/clients/current/accounts")
     public ResponseEntity<Object> getAccountsClient(Authentication authentication) {
 
         if (authentication == null){
@@ -139,7 +139,7 @@ public class ClientController {
         return new ResponseEntity<>(new ClientDTO(client).getAccounts(), HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/clients/current/cards", method = RequestMethod.POST)
+    @PostMapping("/clients/current/cards")
     public ResponseEntity<Object> addCardClient(Authentication authentication, @RequestParam String cardType, @RequestParam String cardColor) {
 
         if (authentication == null){
@@ -183,7 +183,7 @@ public class ClientController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @RequestMapping(path = "/clients/current/cards", method = RequestMethod.GET)
+    @GetMapping("/clients/current/cards")
     public ResponseEntity<Object> getCardsClient(Authentication authentication) {
 
         if (authentication == null) {
