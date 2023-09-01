@@ -56,9 +56,6 @@ public class HomebankingApplication {
 			randomCBU2 = "VIN"+ Utils.random3();
 		}
 
-		System.out.println(randomCBU1);
-		System.out.println(randomCBU2);
-
 		Client client = new Client("Melba", "Morel", "melba@mindhub.com", passwordEncoder.encode("1234"));
 		clientRepository.save(client);
 
@@ -138,9 +135,6 @@ public class HomebankingApplication {
 			randomCBU1 = "VIN"+ Utils.random3();
 			randomCBU2 = "VIN"+ Utils.random3();
 		}
-
-		System.out.println(randomCBU1);
-		System.out.println(randomCBU2);
 
 		Client client = new Client("Gabriel", "Oubiña", "ak.gabrii@gmail.com", passwordEncoder.encode("1234"));
 		clientRepository.save(client);
