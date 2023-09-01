@@ -23,9 +23,10 @@ public class WebAuthorization {
 
 
         http.authorizeRequests()
-                .antMatchers("/auth/**", "/auth/css/**", "/auth/img/**", "/auth/js/**", "/api/clients", "/api/login").permitAll()
+                .antMatchers("/auth/**", "/auth/login", "/auth/logout", "/api/clients/current").permitAll()
                 .antMatchers("/admin/**").hasAuthority("ADMIN")
-                .antMatchers("/web/**").hasAuthority("CLIENT")
+                .antMatchers("/web/**", "/api/**").hasAuthority("CLIENT")
+                .anyRequest().denyAll();
         ;
 
         http.formLogin()

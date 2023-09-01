@@ -40,9 +40,6 @@ public class ClientController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
     private AccountRepository accountRepository;
 
     @Autowired
@@ -65,16 +62,31 @@ public class ClientController {
     @RequestMapping(path = "/clients", method = RequestMethod.POST)
     public ResponseEntity<Object> register(@RequestParam String firstName, @RequestParam String lastName,@RequestParam String email, @RequestParam String password) {
 
-        if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
+        if (firstName.isBlank() || lastName.isBlank() || email.isBlank() || password.isBlank()) {
             return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
         }
 
 
         if (clientRepo.findByEmail(email) !=  null) {
-            return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("Email already in use", HttpStatus.FORBIDDEN);
         }
 
-        clientRepo.save(new Client(firstName, lastName, email, passwordEncoder.encode(password)));
+
+        LocalDateTime now =  LocalDateTime.now();
+
+        Client client = new Client(firstName, lastName, email, passwordEncoder.encode(password));
+
+        String randomCBU1 = "VIN"+ Utils.random3();
+        while (clientRepo.existsByAccountsNumber(randomCBU1)){
+            randomCBU1 = "VIN"+ Utils.random3();
+        }
+
+        Account account = new Account(now, 0);
+        account.setNumber(randomCBU1);
+
+        client.addAccount(account);
+
+        clientRepo.save(client);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
 
@@ -113,8 +125,14 @@ public class ClientController {
         }
         LocalDateTime now =  LocalDateTime.now();
 
+        String randomCBU1 = "VIN"+ Utils.random3();
+        while (clientRepo.existsByAccountsNumber(randomCBU1)){
+            randomCBU1 = "VIN"+ Utils.random3();
+        }
+
         Account account = new Account(now, 0);
-        account.setNumber("VIN" + Utils.random3());
+        account.setNumber(randomCBU1);
+
         account.setClient(client);
         accountRepository.save(account);
 
@@ -146,6 +164,10 @@ public class ClientController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
+        if (cardType.isBlank() || cardColor.isBlank()) {
+            return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
+        }
+
         Client client = clientRepo.findByEmail(authentication.getName());
 
         if (client == null){
@@ -163,17 +185,18 @@ public class ClientController {
 
         if (cardsOfType.stream().anyMatch(card -> card.getColor().equals(color))) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("NO puedes tener 2 tarjetas de tipo " + color.name());
+                    .body("You can NOT have 2 type cards " + color.name());
         }
 
-        if (cardsOfType.size() >= 3) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("Superaste el máximo de tarjetas de tipo " + type.name());
+        String numbercard1 = Utils.fakeCardNumber();
+
+        while (cardRepository.existsByNumber(numbercard1)){
+            numbercard1 = Utils.fakeCardNumber();
         }
 
         Card newCard = new Card(client.getFirstName(), client.getLastName(), TransactionType.valueOf(cardType.toUpperCase()), CardColor.valueOf(cardColor.toUpperCase()), LocalDateTime.now());
         newCard.randomCVV();
-        newCard.randomCard();
+        newCard.randomCard(numbercard1);
         newCard.setClient(client);
 
         cardRepository.save(newCard);

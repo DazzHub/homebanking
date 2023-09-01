@@ -50,7 +50,7 @@ public class TransactionController {
         }
 
         if (fromAccountNumber.equalsIgnoreCase(toAccountNumber)){
-            return new ResponseEntity<>("Misma cuenta :V", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("Same account :V", HttpStatus.FORBIDDEN);
         }
 
         //buscar cuenta por number
@@ -58,11 +58,11 @@ public class TransactionController {
         Account accountOtherClient = getAccountByNumber(otherClient, toAccountNumber);
 
         if (accountClient == null || accountOtherClient == null){
-            return new ResponseEntity<>("No tenes esa cuenta :V", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("ou don't have that account :V", HttpStatus.FORBIDDEN);
         }
 
         if (accountClient.getBalance() <= 0){
-            return new ResponseEntity<>("No tenes FONDOS papá", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("You don't have enough funds :C", HttpStatus.FORBIDDEN);
         }
 
         LocalDateTime now =  LocalDateTime.now();

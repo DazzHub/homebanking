@@ -20,6 +20,19 @@ public class Utils {
         return fakeCardNumberBuilder.toString();
     }
 
+    public static String fakeCardNumber() {
+        StringBuilder fakeCardNumberBuilder = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 16; i++) {
+            if (i > 0 && i % 4 == 0) {
+                fakeCardNumberBuilder.append("-");
+            }
+            fakeCardNumberBuilder.append(random.nextInt(10));
+        }
+
+        return fakeCardNumberBuilder.toString();
+    }
+
     public static void processTransaction(Account account, TransactionType type, String description, LocalDateTime timestamp, double amount, TransactionRepository transactionRepo) {
         Transaction transaction = new Transaction(type, description, timestamp, amount);
         if (transactionRepo != null){

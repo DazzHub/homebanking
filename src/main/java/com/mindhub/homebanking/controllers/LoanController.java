@@ -63,11 +63,11 @@ public class LoanController {
         Loan loan = loanRepo.findById(loanApplicationDTO.getLoanTypeId()).orElse(null);
 
         if (loan == null){
-            return new ResponseEntity<>("No contamos con ese prestamo", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("We don't have that loan.", HttpStatus.FORBIDDEN);
         }
 
         if(loanApplicationDTO.getAmount() > loan.getMaxAmount()){
-            return new ResponseEntity<>("No prestamos mas de lo que podemos :c", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("We do not lend more than we can :C", HttpStatus.FORBIDDEN);
         }
 
         ClientLoan clientLoan = new ClientLoan(loanApplicationDTO.getAmount(), loanApplicationDTO.getPayments(), loan);
