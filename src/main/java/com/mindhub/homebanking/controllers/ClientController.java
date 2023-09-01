@@ -176,7 +176,7 @@ public class ClientController {
 
         if (cardsOfType.stream().anyMatch(card -> card.getColor().equals(color))) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("NO puedes tener 2 tarjetas de tipo " + color.name());
+                    .body("You can NOT have 2 type cards " + color.name());
         }
 
         String numbercard1 = Utils.fakeCardNumber();
