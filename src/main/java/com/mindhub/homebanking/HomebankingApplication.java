@@ -4,6 +4,7 @@ import com.mindhub.homebanking.enums.CardColor;
 import com.mindhub.homebanking.enums.TransactionType;
 import com.mindhub.homebanking.models.*;
 import com.mindhub.homebanking.repositories.*;
+import com.mindhub.homebanking.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -35,24 +36,36 @@ public class HomebankingApplication {
 			loanRepository.save(hipotecario);
 			loanRepository.save(automotriz);
 
-			createClientMelba(clientRepository, accountRepository, transactionRepository, clientLoanRepository, cardRepository, personal, hipotecario, automotriz);
-			createClientYo(clientRepository, accountRepository, transactionRepository, clientLoanRepository, cardRepository, personal, hipotecario, automotriz);
+			System.out.println("1");
+			createClientMelba(clientRepository, accountRepository, transactionRepository, clientLoanRepository, cardRepository, personal, hipotecario);
+			createClientYo(clientRepository, accountRepository, transactionRepository, clientLoanRepository, cardRepository, personal, automotriz);
 		};
 	}
 
 
-	private void createClientMelba(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, ClientLoanRepository clientLoanRepository, CardRepository cardRepository, Loan personal, Loan hipotecario, Loan automotriz) {
+	private void createClientMelba(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, ClientLoanRepository clientLoanRepository, CardRepository cardRepository, Loan personal, Loan hipotecario) {
 		LocalDateTime now =  LocalDateTime.now();
 		LocalDateTime sameDayNextDay = now.plusDays(1);
 		LocalDateTime sameDayBackDay = now.plusDays(-1);
+
+		String randomCBU1 = "VIN"+ Utils.random3();
+		String randomCBU2 = "VIN"+ Utils.random3();
+
+		while (clientRepository.existsByAccountsNumber(randomCBU1) || clientRepository.existsByAccountsNumber(randomCBU2)){
+			randomCBU1 = "VIN"+ Utils.random3();
+			randomCBU2 = "VIN"+ Utils.random3();
+		}
+
+		System.out.println(randomCBU1);
+		System.out.println(randomCBU2);
 
 		Client client = new Client("Melba", "Morel", "melba@mindhub.com", passwordEncoder.encode("1234"));
 		clientRepository.save(client);
 
 		Account account = new Account(now, 5000);
-		account.setNumber("VIN001");
+		account.setNumber(randomCBU1);
 		Account account2 = new Account(sameDayNextDay,7500);
-		account2.setNumber("VIN002");
+		account2.setNumber(randomCBU2);
 
 		Transaction transaction = new Transaction(TransactionType.DEBIT, "Zapatillas", now, 2000);
 		Transaction transaction2 = new Transaction(TransactionType.CREDIT, "Joyas", sameDayNextDay, 3000);
@@ -91,32 +104,51 @@ public class HomebankingApplication {
 		clientLoanRepository.save(clientLoan);
 		clientLoanRepository.save(clientLoan2);
 
+		String numbercard1 = Utils.fakeCardNumber();
+		String numbercard2 = Utils.fakeCardNumber();
+
+		while (cardRepository.existsByNumber(numbercard1) || cardRepository.existsByNumber(numbercard2)){
+			numbercard1 = Utils.fakeCardNumber();
+			numbercard2 = Utils.fakeCardNumber();
+		}
+
 		Card card1 = new Card(client.getFirstName(), client.getLastName(), TransactionType.DEBIT, CardColor.GOLD, LocalDateTime.now());
 		card1.randomCVV();
-		card1.randomCard();
+		card1.randomCard(numbercard1);
 		client.addCard(card1);
 
 		cardRepository.save(card1);
 
 		Card card2 = new Card(client.getFirstName(), client.getLastName(), TransactionType.CREDIT, CardColor.TITANIUM, LocalDateTime.now());
 		card2.randomCVV();
-		card2.randomCard();
+		card2.randomCard(numbercard2);
 		client.addCard(card2);
 		cardRepository.save(card2);
 	}
 
-	private void createClientYo(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, ClientLoanRepository clientLoanRepository, CardRepository cardRepository, Loan personal, Loan hipotecario, Loan automotriz) {
+	private void createClientYo(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, ClientLoanRepository clientLoanRepository, CardRepository cardRepository, Loan personal, Loan automotriz) {
 		LocalDateTime now =  LocalDateTime.now();
 		LocalDateTime sameDayNextDay = now.plusDays(1);
 		LocalDateTime sameDayBackDay = now.plusDays(-1);
+
+		String randomCBU1 = "VIN"+ Utils.random3();
+		String randomCBU2 = "VIN"+ Utils.random3();
+
+		while (clientRepository.existsByAccountsNumber(randomCBU1) || clientRepository.existsByAccountsNumber(randomCBU2)){
+			randomCBU1 = "VIN"+ Utils.random3();
+			randomCBU2 = "VIN"+ Utils.random3();
+		}
+
+		System.out.println(randomCBU1);
+		System.out.println(randomCBU2);
 
 		Client client = new Client("Gabriel", "Oubiña", "ak.gabrii@gmail.com", passwordEncoder.encode("1234"));
 		clientRepository.save(client);
 
 		Account account = new Account(now, 5000);
-		account.setNumber("VIN003");
+		account.setNumber(randomCBU1);
 		Account account2 = new Account(sameDayNextDay,7500);
-		account2.setNumber("VIN004");
+		account2.setNumber(randomCBU2);
 
 		Transaction transaction = new Transaction(TransactionType.DEBIT, "PC", now, 2000);
 		Transaction transaction2 = new Transaction(TransactionType.CREDIT, "Monitor", sameDayNextDay, 3000);
@@ -155,9 +187,15 @@ public class HomebankingApplication {
 		clientLoanRepository.save(clientLoan);
 		clientLoanRepository.save(clientLoan2);
 
+		String numbercard1 = Utils.fakeCardNumber();
+
+		while (cardRepository.existsByNumber(numbercard1)){
+			numbercard1 = Utils.fakeCardNumber();
+		}
+
 		Card card1 = new Card(client.getFirstName(), client.getLastName(), TransactionType.CREDIT, CardColor.GOLD, LocalDateTime.now());
 		card1.randomCVV();
-		card1.randomCard();
+		card1.randomCard(numbercard1);
 		client.addCard(card1);
 
 		cardRepository.save(card1);

@@ -39,17 +39,8 @@ public class Card {
         this.cardHolder = firstName + " " + lastName;
     }
 
-    public void randomCard(){
-        StringBuilder fakeCardNumberBuilder = new StringBuilder();
-        Random random = new Random();
-        for (int i = 0; i < 16; i++) {
-            if (i > 0 && i % 4 == 0) {
-                fakeCardNumberBuilder.append("-");
-            }
-            fakeCardNumberBuilder.append(random.nextInt(10));
-        }
-
-        this.number = fakeCardNumberBuilder.toString();
+    public void randomCard(String number){
+        this.number = number;
     }
 
     public void randomCVV(){
