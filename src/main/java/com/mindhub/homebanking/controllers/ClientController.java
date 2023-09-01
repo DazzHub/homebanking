@@ -122,8 +122,13 @@ public class ClientController {
         }
         LocalDateTime now =  LocalDateTime.now();
 
+        String randomCBU1 = "VIN"+ Utils.random3();
+        while (clientRepo.existsByAccountsNumber(randomCBU1)){
+            randomCBU1 = "VIN"+ Utils.random3();
+        }
+
         Account account = new Account(now, 0);
-        account.setNumber("VIN" + Utils.random3());
+        account.setNumber(randomCBU1);
         account.setClient(client);
         accountRepository.save(account);
 
