@@ -1,10 +1,8 @@
 package com.mindhub.homebanking.controllers;
 
-import com.mindhub.homebanking.enums.CardColor;
 import com.mindhub.homebanking.enums.TransactionType;
 import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
-import com.mindhub.homebanking.models.Transaction;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import com.mindhub.homebanking.repositories.TransactionRepository;
 import com.mindhub.homebanking.utils.Utils;
@@ -32,9 +30,9 @@ public class TransactionController {
     //esto seria un try catch?
     @Transactional
     @RequestMapping(path = "/transactions", method = RequestMethod.POST)
-    public ResponseEntity<Object> createTransactions(Authentication authentication, @RequestParam String fromAccountNumber, @RequestParam String toAccountNumber, @RequestParam String amount, @RequestParam String description){
+    public ResponseEntity<Object> createTransactions(Authentication authentication, @RequestParam String fromAccountNumber, @RequestParam String toAccountNumber, @RequestParam double amount, @RequestParam String description){
 
-        if (fromAccountNumber.isBlank() || fromAccountNumber.isBlank() || toAccountNumber.isBlank() || amount.isBlank() || description.isBlank()) {
+        if (fromAccountNumber.isBlank() || fromAccountNumber.isBlank() || toAccountNumber.isBlank() || amount <= 0 || description.isBlank()) {
             return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
         }
 
@@ -67,8 +65,8 @@ public class TransactionController {
 
         LocalDateTime now =  LocalDateTime.now();
 
-        Utils.processTransaction(accountClient, TransactionType.DEBIT, description, now, Double.parseDouble(amount), transactionRepo);
-        Utils.processTransaction(accountOtherClient, TransactionType.CREDIT, description, now, Double.parseDouble(amount), transactionRepo);
+        Utils.processTransaction(accountClient, TransactionType.DEBIT, description, now, amount, transactionRepo);
+        Utils.processTransaction(accountOtherClient, TransactionType.CREDIT, description, now, amount, transactionRepo);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
