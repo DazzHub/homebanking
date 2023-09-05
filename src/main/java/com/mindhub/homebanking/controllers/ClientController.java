@@ -45,9 +45,19 @@ public class ClientController {
     private CardRepository cardRepository;
 
 
-    @RequestMapping("/clients")
-    public List<ClientDTO> getClients(){
-        return clientRepo.findAll().stream().map(ClientDTO::new).collect(toList());
+    @RequestMapping("/clients")//solo traer la data del logeado
+    public ResponseEntity<Object> getClients(Authentication authentication){
+        if (authentication.getName() == null){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        Client client = clientRepo.findByEmail(authentication.getName());
+
+        if (client == null) return null;
+
+        //clientRepo.findAll().stream().map(ClientDTO::new).collect(toList());
+
+        return new ResponseEntity<>(new ClientDTO(client), HttpStatus.OK);
     }
 
     @RequestMapping("/clients/{id}")
@@ -153,14 +163,14 @@ public class ClientController {
         return new ResponseEntity<>(new ClientDTO(client).getAccounts(), HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/clients/current/cards", method = RequestMethod.POST)
-    public ResponseEntity<Object> addCardClient(Authentication authentication, @RequestParam String cardType, @RequestParam String cardColor) {
+    @RequestMapping(path = "/clients/current/cards", method = RequestMethod.POST)//dinamico
+    public ResponseEntity<Object> addCardClient(Authentication authentication, @RequestParam TransactionType cardType, @RequestParam CardColor cardColor) {
 
         if (authentication == null){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        if (cardType.isBlank() || cardColor.isBlank()) {
+        if (cardType == null || cardColor == null) {
             return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
         }
 
@@ -170,18 +180,11 @@ public class ClientController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        if (client.getCards().size() >= 3){
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        Set<Card> cardsOfType = client.getCards().stream().filter(card -> card.getType().equals(cardType)).collect(Collectors.toSet());
 
-        TransactionType type = TransactionType.valueOf(cardType.toUpperCase());
-        CardColor color = CardColor.valueOf(cardColor.toUpperCase());
-
-        Set<Card> cardsOfType = client.getCards().stream().filter(card -> card.getType().equals(type)).collect(Collectors.toSet());
-
-        if (cardsOfType.stream().anyMatch(card -> card.getColor().equals(color))) {
+        if (cardsOfType.stream().anyMatch(card -> card.getColor().equals(cardColor))) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("You can NOT have 2 type cards " + color.name());
+                    .body("You can NOT have 2 type cards " + cardColor.name());
         }
 
         String numbercard1 = Utils.fakeCardNumber();
@@ -190,7 +193,7 @@ public class ClientController {
             numbercard1 = Utils.fakeCardNumber();
         }
 
-        Card newCard = new Card(client.getFirstName(), client.getLastName(), TransactionType.valueOf(cardType.toUpperCase()), CardColor.valueOf(cardColor.toUpperCase()), LocalDateTime.now());
+        Card newCard = new Card(client.getFirstName(), client.getLastName(), cardType, cardColor, LocalDateTime.now());
         newCard.randomCVV();
         newCard.randomCard(numbercard1);
         newCard.setClient(client);
@@ -215,7 +218,7 @@ public class ClientController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-
-        return new ResponseEntity<>(client.getCards(), HttpStatus.OK);
+        //dto de client para cards
+        return new ResponseEntity<>(new ClientDTO(client).getCards(), HttpStatus.OK);
     }
 }

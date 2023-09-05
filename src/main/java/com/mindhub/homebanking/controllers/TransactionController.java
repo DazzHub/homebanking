@@ -30,10 +30,10 @@ public class TransactionController {
 
     //esto seria un try catch?
     @Transactional
-    @RequestMapping(path = "/transactions", method = RequestMethod.POST)
-    public ResponseEntity<Object> createTransactions(Authentication authentication, @RequestParam String fromAccountNumber, @RequestParam String toAccountNumber, @RequestParam String amount, @RequestParam String description){
+    @RequestMapping(path = "/transactions", method = RequestMethod.POST)//aca arreglar los requests
+    public ResponseEntity<Object> createTransactions(Authentication authentication, @RequestParam String fromAccountNumber, @RequestParam String toAccountNumber, @RequestParam double amount, @RequestParam String description){
 
-        if (fromAccountNumber.isBlank() || fromAccountNumber.isBlank() || toAccountNumber.isBlank() || amount.isBlank() || description.isBlank()) {
+        if (fromAccountNumber.isBlank() || fromAccountNumber.isBlank() || toAccountNumber.isBlank() || amount == 0 || description.isBlank()) {
             return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
         }
 
@@ -66,8 +66,8 @@ public class TransactionController {
 
         LocalDateTime now =  LocalDateTime.now();
 
-        processTransaction(accountClient, TransactionType.DEBIT, description, now, Double.parseDouble(amount));
-        processTransaction(accountOtherClient, TransactionType.CREDIT, description, now, Double.parseDouble(amount));
+        processTransaction(accountClient, TransactionType.DEBIT, description, now, amount);
+        processTransaction(accountOtherClient, TransactionType.CREDIT, description, now, amount);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

@@ -136,7 +136,7 @@ public class HomebankingApplication {
 			randomCBU2 = "VIN"+ Utils.random3();
 		}
 
-		Client client = new Client("Gabriel", "Oubiña", "ak.gabrii@gmail.com", passwordEncoder.encode("1234"));
+		Client client = new Client("Gabriel", "Oubiña", "ak.gabrii@gmail.com", passwordEncoder.encode("1234"), true);
 		clientRepository.save(client);
 
 		Account account = new Account(now, 5000);

@@ -28,7 +28,7 @@ public class Client {
     @ManyToMany(mappedBy = "clients", fetch = FetchType.EAGER)
     private final Set<ClientLoan> clientLoans = new HashSet<>();
 
-
+    private boolean isAdmin;
 
     public Client() {
     }
@@ -38,6 +38,15 @@ public class Client {
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.isAdmin = false;
+    }
+
+    public Client(String firstName, String lastName, String email, String password, boolean isAdmin) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.isAdmin = isAdmin;
     }
 
     public void addAccount(Account account){
@@ -90,4 +99,7 @@ public class Client {
         return password;
     }
 
+    public boolean isAdmin() {
+        return isAdmin;
+    }
 }
