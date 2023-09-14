@@ -50,8 +50,16 @@ public class ClientController {
 
 
     @GetMapping("/clients")
-    public List<ClientDTO> getClients(){
-        return clientRepo.findAll().stream().map(ClientDTO::new).collect(toList());
+    public ResponseEntity<Object> getClients(Authentication authentication){
+        if (authentication.getName() == null){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        Client client = clientRepo.findByEmail(authentication.getName());
+
+        if (client == null) return null;
+
+        return new ResponseEntity<>(new ClientDTO(client), HttpStatus.OK);
     }
 
     @GetMapping("/clients/{id}")
@@ -140,7 +148,7 @@ public class ClientController {
     }
 
     @PostMapping("/clients/current/cards")
-    public ResponseEntity<Object> addCardClient(Authentication authentication, @RequestParam String cardType, @RequestParam String cardColor) {
+    public ResponseEntity<Object> addCardClient(Authentication authentication, @RequestParam TransactionType cardType, @RequestParam CardColor cardColor) {
 
         if (authentication == null){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -156,22 +164,15 @@ public class ClientController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        TransactionType type = TransactionType.valueOf(cardType.toUpperCase());
-        CardColor color = CardColor.valueOf(cardColor.toUpperCase());
+        Set<Card> cardsOfType = client.getCards().stream().filter(card -> card.getType().equals(cardType)).collect(Collectors.toSet());
 
-        Set<Card> cardsOfType = client.getCards().stream().filter(card -> card.getType().equals(type)).collect(Collectors.toSet());
-
-        if (cardsOfType.stream().anyMatch(card -> card.getColor().equals(color))) {
+        if (cardsOfType.stream().anyMatch(card -> card.getColor().equals(cardColor))) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("NO puedes tener 2 tarjetas de tipo " + color.name());
+                    .body("You can NOT have 2 type cards " + cardColor.name());
         }
 
-        if (cardsOfType.size() >= 3) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("Superaste el máximo de tarjetas de tipo " + type.name());
-        }
+        Card newCard = new Card(client.getFirstName(), client.getLastName(), cardType, cardColor, LocalDateTime.now());
 
-        Card newCard = new Card(client.getFirstName(), client.getLastName(), TransactionType.valueOf(cardType.toUpperCase()), CardColor.valueOf(cardColor.toUpperCase()), LocalDateTime.now());
         newCard.randomCVV();
         newCard.randomCard();
         newCard.setClient(client);
@@ -197,6 +198,6 @@ public class ClientController {
         }
 
 
-        return new ResponseEntity<>(client.getCards(), HttpStatus.OK);
+        return new ResponseEntity<>(new ClientDTO(client).getCards(), HttpStatus.OK);
     }
 }
