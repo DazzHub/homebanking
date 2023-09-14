@@ -51,7 +51,7 @@ public class HomebankingApplication {
 		LocalDateTime sameDayNextDay = now.plusDays(1);
 		LocalDateTime sameDayBackDay = now.plusDays(-1);
 
-		Client client = new Client("Melba", "Morel", "melba@mindhub.com", passwordEncoder.encode("1234"));
+		Client client = new Client("Melba", "Morel", "melba@mindhub.com", passwordEncoder.encode("1234"), true);
 		clientRepository.save(client);
 
 		Account account = new Account(now, 5000);

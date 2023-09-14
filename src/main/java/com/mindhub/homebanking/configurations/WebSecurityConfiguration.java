@@ -39,6 +39,13 @@ public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdap
             if (client != null) {
                 System.out.println(client.getFirstName() + " -> Logeando");
 
+                if (client.isAdmin()){
+                    return User.withUsername(client.getEmail())
+                            .password(client.getPassword())
+                            .authorities("ADMIN")
+                            .build();
+                }
+
                 return User.withUsername(client.getEmail())
                         .password(client.getPassword())
                         .authorities("CLIENT")
