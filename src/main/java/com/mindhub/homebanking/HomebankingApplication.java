@@ -98,7 +98,7 @@ public class HomebankingApplication {
 
 		Card card1 = new Card(client.getFirstName(), client.getLastName(), TransactionType.DEBIT, CardColor.GOLD, LocalDateTime.now());
 		card1.randomCVV();
-		card1.randomCard();
+		card1.setCard("2236-4243-1714-2777");
 		client.addCard(card1);
 
 		cardRepository.save(card1);

@@ -24,7 +24,7 @@ public class WebAuthorization {
 
         http.authorizeRequests()
                 .antMatchers("/auth/**", "/auth/css/**", "/auth/img/**", "/auth/js/**", "/api/clients", "/api/login").permitAll()
-                .antMatchers("/admin/**").hasAuthority("ADMIN")
+                .antMatchers("/admin/**", "/**").hasAuthority("ADMIN")
                 .antMatchers("/web/**").hasAuthority("CLIENT")
         ;
 
